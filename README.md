@@ -1,3 +1,8 @@
+## Paiton Model Setup
+
+First run the setup script to download (if necessary) the required model:
+./setup.sh -model EliovpAI/Deepseek-R1-0528-Qwen3-8B-FP8-KV
+
 ## Model Serving
 
 ### Starting the Server
