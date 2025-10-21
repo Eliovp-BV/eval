@@ -8,6 +8,12 @@ For example:
 
 ```./setup.sh -model EliovpAI/Deepseek-R1-0528-Qwen3-8B-FP8-KV```
 
+or
+
+```./setup.sh -model amd/Llama-3.1-8B-Instruct-FP8-KV```
+
+! This will depend on which model has been agreed for usage with Paiton.
+
 ## Model Serving
 
 ### Starting the Server
