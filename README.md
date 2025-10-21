@@ -3,7 +3,9 @@
 First run the setup script in the /app directory to download (if necessary) the required model:
 
 ```./setup.sh -model <model-name>```
+
 For example:
+
 ```./setup.sh -model EliovpAI/Deepseek-R1-0528-Qwen3-8B-FP8-KV```
 
 ## Model Serving
