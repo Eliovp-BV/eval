@@ -6,11 +6,11 @@ First run the setup script in the /app directory to download (if necessary) the 
 
 For example:
 
-```./setup.sh -model EliovpAI/Deepseek-R1-0528-Qwen3-8B-FP8-KV```
+```./setup.sh -model EliovpAI/Deepseek-R1-0528-Qwen3-8B-FP8-KV -loc <download-or-cached-location-of-model>```
 
 or
 
-```./setup.sh -model amd/Llama-3.1-8B-Instruct-FP8-KV```
+```./setup.sh -model amd/Llama-3.1-8B-Instruct-FP8-KV <download-or-cached-location-of-model>```
 
 ! This will depend on which model has been agreed for usage with Paiton.
 
@@ -24,9 +24,7 @@ To serve the AMD/Llama-3.1-8B-Instruct-FP8-KV model, use the following command:
 python3 /app/wrap_vllm_entrypoint.py \
     --model /app/Llama-3.1-8B-Instruct-FP8-KV/ \
     --served-model-name amd/Llama-3.1-8B-Instruct-FP8-KV \
-    --num-scheduler-steps 10 \
-    --compilation-config '{"use_cudagraph": false, "cudagraph_capture_sizes": []}' \
-    --max-model-len 4096 \
+    --compilation-config '{cudagraph_mode": 0, "cudagraph_capture_sizes": []}' \
     --kv-cache-dtype fp8
 ```
 
@@ -36,8 +34,7 @@ To serve the EliovpAI/Deepseek-R1-0528-Qwen3-8B-FP8-KV model, use the following 
 python3 /app/wrap_vllm_entrypoint.py \
     --model /app/Deepseek-R1-0528-Qwen3-8B-FP8-KV/ \
     --served-model-name EliovpAI/Deepseek-R1-0528-Qwen3-8B-FP8-KV \
-    --num-scheduler-steps 10 \
-    --compilation-config '{"use_cudagraph": false, "cudagraph_capture_sizes": []}' \
+    --compilation-config '{cudagraph_mode": 0, "cudagraph_capture_sizes": []}' \
     --kv-cache-dtype fp8
 ```
 
@@ -45,7 +42,6 @@ python3 /app/wrap_vllm_entrypoint.py \
 
 - `--model`: Path to the model files
 - `--served-model-name`: Name identifier for the served model
-- `--num-scheduler-steps`: Number of scheduler steps for request processing
 - `--compilation-config`: JSON configuration for CUDA graph optimization
   - `use_cudagraph`: Disabled for compatibility with Paiton to use VLLMs faster Async Engine
   - `cudagraph_capture_sizes`: Empty array for no capture sizes, again for compatibility with Paiton
@@ -66,15 +62,7 @@ python3 /app/wrap_vllm_entrypoint.py \
 To benchmark the model performance using the ShareGPT dataset:
 
 ```bash
-python3 /app/vllm/benchmarks/benchmark_serving.py \
-    --backend vllm \
-    --model amd/Llama-3.1-8B-Instruct-FP8-KV \
-    --dataset-name sharegpt \
-    --dataset-path /app/vllm/benchmarks/ShareGPT_V3_unfiltered_cleaned_split.json \
-    --num-prompts 1024 \
-    --random-range-ratio 1.0 \
-    --percentile-metrics ttft,tpot,itl,e2el \
-    --sharegpt-output-len 256
+vllm bench serve --backend vllm --model EliovpAI/Deepseek-R1-0528-Qwen3-8B-FP8-KV --dataset-name sharegpt --dataset-path /app/vllm/benchmarks/ShareGPT_V3_unfiltered_cleaned_split.json --num-prompts 1024 --random-range-ratio 1.0 --percentile-metrics ttft,tpot,itl,e2el --sharegpt-output-len 256 --port 8888 --max-concurrency 128 --request-rate=inf
 ```
 
 ### Benchmark Parameters Explained
